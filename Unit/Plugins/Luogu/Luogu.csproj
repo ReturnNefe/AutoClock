@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <Version>0.1.0</Version>
+    <Author>ReturnNefe</Author>
+    
+    <!--
+      NOTE:
+      Important. 
+      See https://learn.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
+    -->
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../AutoClock.Interface/AutoClock.Interface.csproj">
+
+      <!-- NOTE: See the link above -->
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="3.2.4" />
+  </ItemGroup>
+</Project>
