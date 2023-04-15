@@ -44,12 +44,12 @@ namespace EmailSender
             }
         }
 
-        public Task Handle(PluginInfo plugin, bool result, string message)
+        public async Task Handle(PluginInfo plugin, bool result, string message)
         {
             if (setting == null)
             {
                 Logger.Log(this, "setting is empty.");
-                return Task.CompletedTask;
+                return;
             }
 
             if (!result)
@@ -62,7 +62,7 @@ namespace EmailSender
                               message;
 
                 string? errorMessage = null;
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     try
                     {
@@ -76,8 +76,6 @@ namespace EmailSender
 
                 Logger.Log(this, $"{(errorMessage == null ? "Success" : "Failed")} | Try to send email for the plugin \"{plugin.Name}\"." + Environment.NewLine + (errorMessage == null ? "" : errorMessage + Environment.NewLine));
             }
-
-            return Task.CompletedTask;
         }
 
     }

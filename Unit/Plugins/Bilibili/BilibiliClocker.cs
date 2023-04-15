@@ -1,4 +1,5 @@
-﻿using AutoClock.Interface;
+﻿using Flurl.Http;
+using AutoClock.Interface;
 
 namespace Bilibili
 {
@@ -11,19 +12,19 @@ namespace Bilibili
         // Public Properties
         public PluginInfo Info => info;
 
-        public Task<(bool, string)> Clock()
-        {
-            throw new NotImplementedException();
-        }
-
         public Task Loading(string baseDirectory)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+        }
+
+        public Task<(bool, string)> Clock()
+        {
+            return Task.FromResult((true, ""));
         }
 
         public Task Wait()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Luogu
     public class LuoguClocker : IClocker
     {
         // Private Properties
-        private PluginInfo info = new("Luogu", "ReturnNefe", "A clocker for Luogu.", new("0.1.0"));
+        private PluginInfo info = new("Luogu", "ReturnNefe", "A clocker for Luogu.", new("0.1.1"));
         private DateTime final = DateTime.Now;
         private Setting? setting;
 
@@ -45,12 +45,19 @@ namespace Luogu
                 Logger.Log(this, "setting is empty.");
                 return "";
             }
-            
-            return await GetSingleTagValueByAttr(await setting.GetTokenUrl
-                                                                  .WithHeader("cookie", cookie)
-                                                                  .WithHeader("referer", setting.PostReferer)
-                                                                  .WithHeader("user-agent", setting.PostUserAgent)
-                                                                  .GetStringAsync(),
+
+            var html = await setting.GetTokenUrl
+                                    .WithHeader("cookie", cookie)
+                                    .WithHeader("referer", setting.PostReferer)
+                                    // NOTE:
+                                    // Changelog 2023/4/14
+                                    // It seems that luogu.com changed its strategy so that if we try to inquire for the result with "user-agent" header, we'll get some confusing result.
+                                    // So I had to change the code.
+                                    //
+                                    // **Code**
+                                    // .WithHeader("user-agent", setting.PostUserAgent)
+                                    .GetStringAsync();
+            return await GetSingleTagValueByAttr(html,
                                                  "meta", "name", "csrf-token");
         }
 
@@ -92,43 +99,55 @@ namespace Luogu
                 Logger.Log(this, "setting is empty.");
                 return (true, "setting error");
             }
-            
+
             var index = 0;
             var success = true;
             var error = new StringBuilder();
 
             foreach (var user in setting.Users)
             {
+                var csrfToken = await GetLuoguCsrfToken(user.Cookie);
+                var result = "";
+                var resultJson = default(JsonObject);
+
                 try
                 {
-                    var result = await (await setting.PunchUrl
-                                                      .WithHeader("cookie", user.Cookie)
-                                                      .WithHeader("x-csrf-token", await GetLuoguCsrfToken(user.Cookie))
-                                                      .WithHeader("referer", setting.PostReferer)
-                                                      .WithHeader("user-agent", setting.PostUserAgent)
-                                                      .PostAsync())
-                                              .GetStringAsync();
+                    result = await (await setting.PunchUrl
+                                                 .WithHeader("cookie", user.Cookie)
+                                                 .WithHeader("x-csrf-token", csrfToken)
+                                                 .WithHeader("referer", setting.PostReferer)
+                                                 .WithHeader("user-agent", setting.PostUserAgent)
+                                                 .PostAsync())
+                                            .GetStringAsync();
+                    resultJson = JsonSerializer.Deserialize<JsonObject>(result);
 
-                    var resultJson = JsonSerializer.Deserialize<JsonObject>(result);
                     if (resultJson == null)
                         throw new Exception("result is null");
 
-                    if ((int)resultJson["code"]! == 200)
+                    switch ((int)(resultJson["code"] ?? 0))
                     {
-                        Logger.Log(this, $"User-{index} 打卡成功{Environment.NewLine}");
-                    }
-                    else
-                    {
-                        success = false;
-                        throw new Exception($"User-{index} 打卡失败{Environment.NewLine}");
+                        case 200:
+                            Logger.Log(this, $"User-{index} 打卡成功{Environment.NewLine}");
+                            break;
+                            
+                        case 201:
+                            Logger.Log(this, $"User-{index} 已打卡{Environment.NewLine}");
+                            break;
+
+                        default:
+                            throw new Exception($"User-{index} 打卡失败{Environment.NewLine}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(this, ex.ToString() + Environment.NewLine);
-                    error.AppendLine($"[User-{index}] " + ex.ToString() + Environment.NewLine);
+                    success = false;
+
+                    var errMessage = $"[User-{index}] {ex}{Environment.NewLine}{Environment.NewLine}    result = {result}{Environment.NewLine}    data = {resultJson?["data"]?.ToString() ?? "(data is empty)"}{Environment.NewLine}    message = {resultJson?["message"]?.ToString() ?? "(message is empty)"}{Environment.NewLine}    csrf-token = {csrfToken}{Environment.NewLine}";
+
+                    Logger.Log(this, errMessage);
+                    error.AppendLine(errMessage);
                 }
-                
+
                 ++index;
             }
 
