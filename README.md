@@ -1,4 +1,8 @@
 # AutoClock
+
+
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ReturnNefe/AutoClock?include_prereleases&style=for-the-badge)](https://github.com/ReturnNefe/AutoClock/releases) ![GitHub all releases](https://img.shields.io/github/downloads/ReturnNefe/AutoClock/total?style=for-the-badge)
+
 Auto Clock-in some particular websites every day. 😋
 
 AutoClock can clocks automatically by loading various plugins, you just need to run it in the server.
@@ -33,3 +37,7 @@ The table below lists the supported plugins.
     ```shell
     ./AutoClock
     ```
+    
+## License
+
+[MIT](LICENSE) © ReturnNefe
