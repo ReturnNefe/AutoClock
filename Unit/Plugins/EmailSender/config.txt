@@ -1,7 +1,0 @@
-{
-    mailServer: "",
-    key: "",
-    sendUser: "",
-    receiveUser: "",
-    title: ""
-}

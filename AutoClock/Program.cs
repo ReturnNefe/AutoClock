@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Nefe.PluginCore;
 using AutoClock.Global;
 using AutoClock.Interface;
-using System.Linq;
 
 namespace AutoClock
 {
