@@ -67,7 +67,7 @@ namespace Luogu
         // Public Method
         public LuoguClocker() { }
 
-        public async Task Loading(string baseDirectory)
+        public async Task OnLoading(string baseDirectory)
         {
             try
             {
@@ -91,6 +91,8 @@ namespace Luogu
                 Logger.Log(this, ex.Message + Environment.NewLine);
             }
         }
+
+        public Task OnUnloading() => Task.CompletedTask;
 
         public async Task<(bool, string)> Clock()
         {
@@ -129,7 +131,7 @@ namespace Luogu
                         case 200:
                             Logger.Log(this, $"User-{index} 打卡成功{Environment.NewLine}");
                             break;
-                            
+
                         case 201:
                             Logger.Log(this, $"User-{index} 已打卡{Environment.NewLine}");
                             break;
@@ -156,13 +158,16 @@ namespace Luogu
 
         public async Task Wait()
         {
-            if (DateTime.Now > final)
+            while (true)
             {
-                final += TimeSpan.FromDays(1);
-                return;
+                if (DateTime.Now >= final)
+                {
+                    final += TimeSpan.FromDays(1);
+                    return;
+                }
+                else
+                    await Task.Delay(final - DateTime.Now);
             }
-            else
-                await Task.Delay(final - DateTime.Now);
         }
     }
 }

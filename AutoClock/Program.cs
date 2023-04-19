@@ -14,35 +14,50 @@ namespace AutoClock
             {
                 var pluginName = Path.GetFileName(dirPath);
                 var pluginFile = Path.Combine(dirPath, $"{pluginName}.dll");
-                
+
                 if (File.Exists(pluginFile))
                 {
-                    var plugin = new Nefe.PluginCore.Plugin();
-                    plugin.LoadFromFile(pluginFile);
+                    var plugin = new Nefe.PluginCore.Plugin(pluginFile, isCollectible: true);
+                    plugin.LoadFromFile();
                     AppInfo.Plugins.Add(plugin);
 
                     var clockers = plugin.CreateInstances<IClocker>();
                     var monitors = plugin.CreateInstances<IMonitor>();
                     foreach (var iter in clockers)
                     {
-                        await iter.Loading(dirPath);
+                        await iter.OnLoading(dirPath);
+                        plugin.Unloading += async (_) => await iter.OnUnloading();
                         AppInfo.Clockers.Add(iter);
                     }
                     foreach (var iter in monitors)
                     {
-                        await iter.Loading(dirPath);
+                        await iter.OnLoading(dirPath);
+                        plugin.Unloading += async (_) => await iter.OnUnloading();
                         AppInfo.Monitors.Add(iter);
                     }
-                    
-                    Logger.Log("AutoClock", $"{pluginName} had been loaded. Created {clockers.Count()} Clocker(s), {monitors.Count()} Monitor(s).");
+
+                    var logMessage = string.Empty;
+                    if (clockers.Count() > 0)
+                        logMessage += $"{clockers.Count()} Clocker(s) ";
+                    if (monitors.Count() > 0)
+                        logMessage += $"{monitors.Count()} Monitor(s) ";
+
+                    Logger.Log("AutoClock", $"{pluginName} had been loaded. ({(string.IsNullOrEmpty(logMessage) ? "No types" : logMessage[..^1])})");
                 }
             }
-            
+
             Logger.NextLine();
         }
 
         static async Task Main(string[] args)
         {
+            // Unload the loaded plugins when Console exit
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                foreach (var iter in AppInfo.Plugins)
+                    iter.Unload();
+            };
+
             await LoadPlugin(Path.Combine(AppInfo.Path, "plugins"));
 
             foreach (var clocker in AppInfo.Clockers)
@@ -54,6 +69,7 @@ namespace AutoClock
                         while (true)
                         {
                             await clocker.Wait();
+
                             try
                             {
                                 var result = await clocker.Clock();

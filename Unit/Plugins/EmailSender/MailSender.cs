@@ -2,7 +2,7 @@ using System.Net.Mail;
 
 namespace EmailSender
 {
-    class MailSender
+    internal class MailSender
     {
         static public void Send(string mailServer, string sendKey, string sendUser, string receiveUser, string title, string content, string[] attachment, bool isHtmlBody = true)
         {

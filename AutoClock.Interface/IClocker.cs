@@ -1,6 +1,6 @@
 ﻿namespace AutoClock.Interface
 {
-    public interface IClocker : Plugin
+    public interface IClocker : IPlugin
     {
         /// <summary>
         /// Occur when Wait() return.

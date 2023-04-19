@@ -20,6 +20,6 @@ namespace AutoClock.Interface
             }
         }
 
-        static public void Log(Plugin sender, string message) => Log(sender.Info.Name, message);
+        static public void Log(IPlugin sender, string message) => Log(sender.Info.Name, message);
     }
 }

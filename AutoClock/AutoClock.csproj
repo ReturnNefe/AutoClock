@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    
+    <Version>0.1.1-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nefe.PluginCore" Version="0.1.0-beta" />
+    <PackageReference Include="Nefe.PluginCore" Version="0.1.1-beta" />
   </ItemGroup>
 
 </Project>

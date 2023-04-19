@@ -10,7 +10,7 @@ namespace EmailSender
     public class EmailSender : IMonitor
     {
         // Private Properties
-        private PluginInfo info = new("EmailSender", "ReturnNefe", "Send email when AutoClock failed to clock-in.", new("0.1.0"));
+        private PluginInfo info = new("EmailSender", "ReturnNefe", "Send an email when plugins failed to clock-in.", new("0.1.1"));
         private Setting? setting;
 
         // Public Properties
@@ -19,7 +19,7 @@ namespace EmailSender
         // Public Method
         public EmailSender() { }
 
-        public async Task Loading(string baseDirectory)
+        public async Task OnLoading(string baseDirectory)
         {
             try
             {
@@ -43,6 +43,8 @@ namespace EmailSender
                 Logger.Log(this, ex.Message + Environment.NewLine);
             }
         }
+        
+        public Task OnUnloading() => Task.CompletedTask;
 
         public async Task Handle(PluginInfo plugin, bool result, string message)
         {
@@ -77,6 +79,5 @@ namespace EmailSender
                 Logger.Log(this, $"{(errorMessage == null ? "Success" : "Failed")} | Try to send email for the plugin \"{plugin.Name}\"." + Environment.NewLine + (errorMessage == null ? "" : errorMessage + Environment.NewLine));
             }
         }
-
     }
 }

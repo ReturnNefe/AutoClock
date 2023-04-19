@@ -12,10 +12,9 @@ namespace Bilibili
         // Public Properties
         public PluginInfo Info => info;
 
-        public Task Loading(string baseDirectory)
-        {
-            return Task.CompletedTask;
-        }
+        public Task OnLoading(string baseDirectory) => Task.CompletedTask;
+
+        public Task OnUnloading() => Task.CompletedTask;
 
         public Task<(bool, string)> Clock()
         {
