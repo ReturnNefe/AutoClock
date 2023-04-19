@@ -17,8 +17,8 @@ The table below lists the supported plugins.
 
 |Name|Author|Description|Link|
 |:--:|:--:|:--:|:--:|
-|EmailSender|ReturnNefe|Send an email when plugins failed to clock-in.||
-|Luogu|ReturnNefe|A clocker for [luogu.com.cn](https://www.luogu.com.cn).||
+|EmailSender|ReturnNefe|Send an email when plugins failed to clock-in.|https://github.com/ReturnNefe/AutoClock.EmailSender/|
+|Luogu|ReturnNefe|A clocker for [luogu.com.cn](https://www.luogu.com.cn).|https://github.com/ReturnNefe/AutoClock.Luogu/|
 |_Bilibili (Coming)_|ReturnNefe|A clocker for [bilibili.com](https://www.bilibili.com/).||
 
 ## Installing
