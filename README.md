@@ -1,6 +1,5 @@
 # AutoClock
 
-
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ReturnNefe/AutoClock?include_prereleases&style=for-the-badge)](https://github.com/ReturnNefe/AutoClock/releases) ![GitHub all releases](https://img.shields.io/github/downloads/ReturnNefe/AutoClock/total?style=for-the-badge)
 
 Auto Clock-in some particular websites every day. 😋
@@ -29,8 +28,11 @@ The table below lists the supported plugins.
 
 1. Download the program in [Releases](https://github.com/ReturnNefe/AutoClock/releases).
 2. Select the plugin you need, download them into ``plugins`` folder. The name of directory must be same as the name of the plugin.
+    
     e.g.
+    
     ✅ ``plugins/PluginA/PluginA.dll``
+    
     ❌ ``plugins/AutoClock.PluginA/PluginA.dll``
 3. Configure them by reading the plugins' instructions.
 4. Run it (in the server).
